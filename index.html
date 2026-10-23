@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>霧鎖山莊・紅傘之怨</title><!-- build:v8-music -->
+<title>霧鎖山莊・紅傘之怨</title><!-- build:v9-press -->
 <style>
 html,body,button,.btn,.hot,#box{touch-action:manipulation}
 #log{position:absolute;inset:0;z-index:12;background:rgba(0,0,0,.9);display:none;flex-direction:column;padding:14px;padding-top:max(14px,env(safe-area-inset-top))}#log h2{color:#f5c26b;text-align:center;margin:4px 0 10px;font-size:20px}#logl{flex:1;overflow:auto;font-size:15px;line-height:1.55;-webkit-overflow-scrolling:touch}#logl p{margin:0 0 10px;white-space:pre-wrap}#logl b{color:#ffd77a}
@@ -76,13 +76,49 @@ html,body{margin:0;height:100%;background:#000;color:#fff;font-family:"PingFang 
 #title .tbtns{margin-top:auto;margin-bottom:11vh;width:100%;display:flex;flex-direction:column;align-items:center;gap:14px}
 #title .tbtns .btn{flex:none!important;width:64%!important;margin:0!important;padding:13px 0;font-size:18px}
 #title .ver{position:absolute;right:10px;bottom:8px;font-size:11px;color:#fff8;letter-spacing:1px}
-</style></head><body><div id="app">
+</style><style id="cx">:root{--gl:#8f9bff;--gl2:#a77bff;--glw:rgba(120,130,255,.45);--bx:rgba(14,18,44,.52);--bxs:rgba(14,18,44,.9);--tc:#6ff0a0;--bt1:#4a57a8;--bt2:#252b66}
+#app #box{background:var(--bxs);border:1.5px solid var(--gl);box-shadow:0 0 16px var(--glw),inset 0 0 22px rgba(255,255,255,.05)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){#app #box{background:var(--bx);-webkit-backdrop-filter:blur(10px) saturate(1.3);backdrop-filter:blur(10px) saturate(1.3)}}
+#app #name{background:linear-gradient(135deg,var(--gl2),var(--gl));border:1px solid rgba(255,255,255,.6);box-shadow:0 0 10px var(--glw);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+#name .chip{display:inline-block;margin-left:8px;padding:0 8px;border-radius:9px;background:rgba(0,0,0,.5);color:var(--tc);font-size:12px;vertical-align:1px;text-shadow:none}
+#app #box.tmode{border-color:var(--tc);box-shadow:0 0 18px rgba(80,240,150,.35),inset 0 0 22px rgba(255,255,255,.05)}
+#txt.test{color:var(--tc)!important;text-shadow:0 0 8px rgba(80,240,150,.3)}
+.kw{color:#ffd54a;text-shadow:0 0 6px #ffb300,0 0 12px rgba(255,179,0,.55);font-weight:bold}
+#app #box.press{animation:bshake .35s}
+@keyframes bshake{0%,100%{transform:none}25%{transform:translateX(-4px)}50%{transform:translateX(3px)}75%{transform:translateX(-2px)}}
+#por.zoom{transform:translateX(-50%) scale(1.09);transform-origin:50% 30%}
+#tban{position:absolute;top:calc(54px + env(safe-area-inset-top));left:0;right:0;z-index:5;display:none;text-align:center;pointer-events:none}
+#tban .tb1{display:inline-block;padding:3px 26px;font-weight:900;letter-spacing:6px;color:var(--tc);background:linear-gradient(90deg,transparent,rgba(0,0,0,.7) 20%,rgba(0,0,0,.7) 80%,transparent);text-shadow:0 0 10px rgba(80,240,150,.7);font-size:18px}
+#tban .tb2{font-size:12px;color:#eee;margin-top:2px;text-shadow:0 1px 3px #000,0 0 6px #000}
+#tban .sds{margin-top:6px;display:flex;gap:6px;justify-content:center}
+#tban .sd{min-width:24px;height:22px;line-height:22px;border-radius:11px;font-size:12px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.35);color:#ccc;padding:0 7px}
+#tban .sd.ok{color:#7dffa0}
+#tban .sd.cur{background:var(--tc);color:#08301a;border-color:#fff;font-weight:bold;box-shadow:0 0 8px var(--tc)}
+#burst{position:absolute;inset:0;z-index:21;pointer-events:none;display:none;overflow:hidden}
+#burst .sl{position:absolute;inset:-50%;background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,255,255,0) 0deg 5deg,rgba(255,255,255,.5) 5deg 6deg);-webkit-mask:radial-gradient(circle,transparent 16%,#000 42%);mask:radial-gradient(circle,transparent 16%,#000 42%);animation:slr .75s linear forwards}
+#burst .bb{position:absolute;left:0;right:0;top:37%;height:20%;background:linear-gradient(100deg,transparent 0,var(--gl2) 12%,var(--gl) 88%,transparent);transform:skewY(-6deg);animation:bin .22s ease-out;box-shadow:0 0 30px var(--glw)}
+#burst .bt{position:absolute;left:0;right:0;top:37%;height:20%;display:flex;align-items:center;justify-content:center;font-size:min(15vw,8.5vh);font-weight:900;font-style:italic;letter-spacing:4px;color:#fff;-webkit-text-stroke:2px #1a1030;text-shadow:5px 5px 0 rgba(0,0,0,.6),0 0 18px #fff;transform:skewY(-6deg);animation:tin .34s cubic-bezier(.2,1.4,.4,1)}
+@keyframes bin{from{transform:skewY(-6deg) translateX(-110%)}}
+@keyframes tin{from{transform:skewY(-6deg) translateX(-130%) scale(1.3)}}
+@keyframes slr{from{transform:rotate(0) scale(1.25);opacity:0}30%{opacity:.9}to{transform:rotate(10deg);opacity:.5}}
+#app.shk2{animation:ashk2 .3s}
+@keyframes ashk2{0%,100%{transform:none}30%{transform:translate(-4px,2px)}60%{transform:translate(3px,-2px)}}
+#tbar{gap:8px!important}
+#tbar .btn{border:1px solid rgba(255,255,255,.4)!important;border-radius:14px;background:linear-gradient(180deg,var(--bt1),var(--bt2));box-shadow:0 3px 0 rgba(0,0,0,.5),0 0 10px var(--glw);text-shadow:0 1px 2px #000;min-height:46px;transition:transform .08s,box-shadow .08s;-webkit-tap-highlight-color:transparent}
+#tbar .btn:active{transform:translateY(2px) scale(.97);box-shadow:0 1px 0 rgba(0,0,0,.5),0 0 6px var(--glw)}
+#tbar .btn[data-v=press]{background:linear-gradient(180deg,#8a6bff,#3d2aa6)}
+#tbar .btn[data-v=present]{background:linear-gradient(180deg,#ff6b4a,#a3200f)}
+#tbar .btn.hint{background:linear-gradient(180deg,#e2ab2c,#7a5208)!important}
+#tbar .btn.leave{background:linear-gradient(180deg,#4c4c58,#2a2a33)!important;min-height:38px}
+@media (prefers-reduced-motion:reduce){#burst *,#app #box.press,#app.shk2,#app.shake,#por.shake{animation:none!important}#por{transition:opacity .25s!important}}
+</style>
+</head><body><div id="app">
 <div id="bg"></div>
 <img id="por" alt="">
 <div id="hs"></div>
 <div id="hud"><div id="place"></div><div><span id="hearts"></span><button class="hb" id="logBtn" style="background:#2a3a6a">📜 回顧</button><button class="hb" id="bgmBtn" style="background:#2a3a6a">♪ 開</button><button class="hb" id="evBtn" style="display:none">📒 證物</button></div></div>
 <div id="bar"></div>
-<div id="tbar"></div>
+<div id="tbar"></div><div id="tban"></div><div id="burst"><div class="sl"></div><div class="bb"></div><div class="bt">追問！</div></div>
 <div id="box"><div id="name"></div><div id="txt"></div><div id="nxt">▼</div></div>
 <div id="modal"><h2 id="mtitle"></h2><div id="mlist"></div><div id="mdesc"></div><div id="mbtns"></div></div>
 <div id="log"><h2>📜 對話回顧</h2><div id="logl"></div><button class="btn" id="logClose" style="flex:none;margin-top:10px">關閉</button></div><div id="flash"><div id="flasht">就是這個！</div></div>
@@ -105,6 +141,7 @@ const SFX={blip:()=>tone(620+Math.random()*80,.04,'square',.02),
  tap:()=>tone(900,.05,'sine',.06),
  thunder:()=>noise(1.8,.6,300),
  sting:()=>{if(!AC)return;duck();noise(1.2,.5,600);[50,51,56,57].forEach(m=>tone(mtof(m+12),1.4,'sawtooth',.035,mtof(m)));tone(55,1.5,'sine',.25,30)},
+ press:()=>{if(!AC)return;noise(.35,.35,3500);tone(330,.18,'square',.05,990);setTimeout(()=>tone(1320,.12,'triangle',.07),120)},
  sad:()=>{[523,466,392,349].forEach((f,i)=>setTimeout(()=>tone(f,.5,'triangle',.08),i*350))},
  win:()=>{[523,659,784,1046,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,.3,'triangle',.1),i*160))}};
 /* ---------- BGM (procedural, 霧鎖 original themes) ---------- */
@@ -215,15 +252,19 @@ function setPor(c,e='normal',fx){if(!c){por.classList.remove('on');por.dataset.c
 const LOG=[];function onTap(el,fn){let tt=0;el.addEventListener('touchend',ev=>{ev.preventDefault();tt=Date.now();fn(ev)},{passive:false});el.addEventListener('click',ev=>{if(Date.now()-tt<700)return;fn(ev)})}
 async function say(who,t,e,opt={}){
  if(!opt.test){LOG.push([who?(CH[who]||who):'',t]);if(LOG.length>60)LOG.shift()}
- box.style.display='block';nm.textContent=(who?(CH[who]||who):'')+(opt.tag||'');txt.className=opt.test?'test':'';
+ box.style.display='block';const nmT=(who?(CH[who]||who):'')+(opt.tag||'');if(opt.chip){nm.textContent=nmT;const cp=document.createElement('span');cp.className='chip';cp.textContent=opt.chip;nm.appendChild(cp)}else nm.textContent=nmT;txt.className=opt.test?'test':'';
+ box.classList.toggle('tmode',!!opt.test);box.classList.remove('press');if(opt.press){void box.offsetWidth;box.classList.add('press')}
  if(who&&ART[who+'_normal'])setPor(who,e||'normal',opt.shake);
- typing=true;skip=false;txt.textContent='';
- for(let i=0;i<t.length;i++){if(skip||window.__fast){txt.textContent=t;break}txt.textContent+=t[i];if(i%2==0&&t[i]!=' ')SFX.blip();await sleep(t[i]==='…'||t[i]==='。'?90:28)}
+ typing=true;skip=false;txt.textContent='';const vt=t.replace(/[【】]/g,'');
+ for(let i=0;i<vt.length;i++){if(skip||window.__fast){txt.innerHTML=rt(t,1e9);break}txt.innerHTML=rt(t,i+1);if(i%2==0&&vt[i]!=' ')SFX.blip();await sleep(vt[i]==='…'||vt[i]==='。'?90:28)}
  typing=false;$('#nxt').style.display='block';
  if(opt.noWait)return;
  await new Promise(r=>waiter=r);
 }
 const N=(t,o)=>say('',t,null,o);
+function rt(t,n){let h='',c=0,k=false;const E={'&':'&amp;','<':'&lt;','>':'&gt;'};for(const ch of t){if(ch==='【'){if(!k){h+='<b class="kw">';k=true}continue}if(ch==='】'){if(k){h+='</b>';k=false}continue}if(c>=n)break;h+=E[ch]||ch;c++}return h+(k?'</b>':'')}
+async function burst(){const b=$('#burst');b.style.display='none';void b.offsetWidth;b.style.display='block';SFX.press();const a=$('#app');a.classList.remove('shk2');void a.offsetWidth;a.classList.add('shk2');await sleep(window.__fast?40:720);b.style.display='none'}
+function tban(r,title,i){const b=$('#tban');if(!r){b.style.display='none';return}b.style.display='block';const P=r._p||{};b.innerHTML='<div class="tb1">— 證言 —</div><div class="tb2"></div><div class="sds">'+r.lines.map((_,j)=>`<span class="sd${j===i?' cur':''}${P[j]?' ok':''}">${j+1}${P[j]?' ✓':''}</span>`).join('')+'</div>';b.querySelector('.tb2').textContent=title.replace(/^.*?證詞[：:]?\s*/,'')||title}
 function hideBox(){box.style.display='none'}
 setTimeout(()=>{$('#title').style.backgroundImage=`url(${ART.bg_ext})`});function setBg(k,filter=''){$('#bg').style.backgroundImage=`url(${ART['bg_'+k]})`;$('#bg').style.filter=filter}
 async function flash(t='就是這個！'){$('#flasht').textContent=t;const f=$('#flash');f.style.display='flex';SFX.obj();$('#app').classList.remove('shake');void $('#app').offsetWidth;$('#app').classList.add('shake');await sleep(window.__fast?50:1100);f.style.display='none'}
@@ -255,22 +296,23 @@ async function useHint(r){
  if(r._h===1)await N(`💡 提示 1：注意第 ${r.answer.i+1} 句——「${L.t}」\n${r.hint[0]}`);
  else {const e=r.answer.ev.map(k=>EV[k].n).join('】或【');await N(`💡 提示 2：在第 ${r.answer.i+1} 句出示【${e}】。\n${r.hint[1]}`);const h=missHint(r);if(h)await N(h)}
 }
-async function crossExam(who,title,r){
+async function crossExam(who,title,r){try{return await cx0(who,title,r)}finally{tban(null);box.classList.remove('tmode','press');por.classList.remove('zoom')}}
+async function cx0(who,title,r){
  let i=0;setBGM(S.flags.final?'final':'test');
  await N(`—— ${title} ——\n（點「追問」逼問細節，發現矛盾就按「出示」證物！卡關可按「💡 提示」，或「✖ 離開」先去調查。）`);
  {const h=missHint(r);if(h)await N(h)}
  while(true){
   const L=r.lines[i];
-  hideBox();
-  await say(who,`「${L.t}」`,L.e||'normal',{test:true,noWait:true,tag:`．證詞 ${i+1}/${r.lines.length}`});
+  hideBox();tban(r,title,i);por.classList.remove('zoom');
+  await say(who,`「${L.t}」`,L.e||'normal',{test:true,noWait:true,chip:`證言 ${i+1}/${r.lines.length}${(r._p||{})[i]?' ✓':''}`});
   const tb=$('#tbar');
   const v=await new Promise(res=>{tb.innerHTML='';tb.style.display='flex';tb.style.bottom=(box.offsetHeight+18)+'px';
-   let done=false;[['◀ 上一句','prev'],['追問','press'],['出示','present','red'],['下一句 ▶','next'],[`💡 提示${r._h>=2?'（已全開）':r._h?'（再一次）':''}`,'hint','r2 hint'],[S.flags.final?'✖ 先撤退（保留心數）':'✖ 離開，先去調查','leave','r2 leave']].forEach(([l,val,c])=>{const x=document.createElement('button');x.type='button';x.className='btn '+(c||'');x.dataset.act=val;x.style.minWidth='0';x.style.flex=1;x.style.padding='14px 2px';x.style.fontSize='15px';x.textContent=l;x.dataset.v=val;onTap(x,()=>{if(done)return;done=true;ac();SFX.tap();tb.style.display='none';res(val)});tb.appendChild(x)})});
+   let done=false;[['◀ 上一句','prev'],['🔍 追問','press'],['📒 出示','present','red'],['下一句 ▶','next'],[`💡 提示${r._h>=2?'（已全開）':r._h?'（再一次）':''}`,'hint','r2 hint'],[S.flags.final?'✖ 先撤退（保留心數）':'✖ 離開，先去調查','leave','r2 leave']].forEach(([l,val,c])=>{const x=document.createElement('button');x.type='button';x.className='btn '+(c||'');x.dataset.act=val;x.style.minWidth='0';x.style.flex=1;x.style.padding='14px 2px';x.style.fontSize='15px';x.textContent=l;x.dataset.v=val;onTap(x,()=>{if(done)return;done=true;ac();SFX.tap();tb.style.display='none';res(val)});tb.appendChild(x)})});
   if(v==='leave'){hideBox();setPor(null);await N(S.flags.final?'（先撤退整理線索。心數會保留，準備好再按「⚖️ 指認兇手」繼續對質。）':`（先離開，晚點再找${CH[who]}談。）`);return 'leave'}
   if(v==='hint'){await useHint(r);continue}
   if(v==='prev'){i=(i-1+r.lines.length)%r.lines.length;continue}
   if(v==='next'){i++;if(i>=r.lines.length){i=0;await N('（證詞又繞回第一句了。哪一句跟證物對不上？）')}continue}
-  if(v==='press'){await flash('等一下！');for(const p of (L.press||[[who,'……就是這樣，沒什麼好說的。']]))await say(p[0],p[1],p[2]);continue}
+  if(v==='press'){(r._p=r._p||{})[i]=1;tban(r,title,i);hideBox();await burst();for(const p of (L.press||[[who,'……就是這樣，沒什麼好說的。']])){const me=p[0]===who;por.classList.toggle('zoom',me);await say(p[0],p[1],p[2]||(me?'nervous':undefined),{press:true})}por.classList.remove('zoom');continue}
   if(v==='present'){busyModal=true;const k=await evModal('要出示哪一個證物？',true);busyModal=false;if(!k)continue;
    if(i===r.answer.i&&r.answer.ev.includes(k)){await flash('就是這個！');return k}
    SFX.wrong();setPor(who,'normal',true);S.miss++;
@@ -283,34 +325,34 @@ async function crossExam(who,title,r){
 /* ---------- testimonies ---------- */
 const T={
  A:{lines:[
-  {t:'昨晚我十點就把大門鎖了，誰都沒有出去。',press:[['zhen','颱風天誰會出去？我每天都是十點鎖門。']]},
+  {t:'昨晚我十點就把大門鎖了，誰都沒有出去。',press:[['zhen','颱風天誰會出去？我每天都是【十點】鎖門。']]},
   {t:'那把紅傘？山莊的傘都放在大廳傘架，誰都拿得到。',press:[['an','所以是從傘架拿的？'],['zhen','應該吧。我哪知道是誰拿的。']]},
-  {t:'傘架上本來就只有 3 把紅傘，一把都沒少。',e:'nervous',press:[['an','妳確定一直都是 3 把？'],['zhen','我、我開了二十年店，當然確定！','nervous']]},
-  {t:'你們這些小孩，別再到處亂翻了。尤其是三樓，絕對不准上去！',press:[['an','三樓有什麼？'],['zhen','……那是我家的事。','nervous']]}],
+  {t:'傘架上本來就只有 3 把紅傘，一把都沒少。',e:'nervous',press:[['an','妳確定一直都是【3 把】？'],['zhen','我、我開了二十年店，當然確定！','nervous']]},
+  {t:'你們這些小孩，別再到處亂翻了。尤其是三樓，絕對不准上去！',press:[['an','三樓有什麼？'],['zhen','……那是【我家的事】。','nervous']]}],
   answer:{i:2,ev:['photo']},hint:['傘的「數量」是重點。有沒有誰在昨晚拍到過傘架？','佳穎 21:00 的照片裡，傘架上是 5 把，不是 3 把。']},
  B:{lines:[
-  {t:'晚上 11 點，大家在大廳散了以後，我就直接回一樓的房間睡了。',press:[['an','一樓？你不是住二樓 201 嗎？'],['ming','我跟陳伯換了啦，二樓太吵。']]},
+  {t:'晚上 11 點，大家在大廳散了以後，我就直接回一樓的房間睡了。',press:[['an','一樓？你不是住二樓 201 嗎？'],['ming','我跟【陳伯換了】啦，二樓太吵。']]},
   {t:'我 23:00 以後一步都沒上過二樓。',e:'nervous',press:[['an','真的一次都沒有？'],['ming','說沒有就沒有！','nervous']]},
-  {t:'我跟俊凱是有點不合，但我才不會為了社長的位子殺人。',press:[['ming','下學期要選社長，他到處說我壞話……但這又怎樣？']]},
-  {t:'01:00 那聲巨響我也有聽到，我還以為是樹倒了。',press:[['ming','我在麻將桌那邊……喔不對，我是在房間聽到的。','nervous']]}],
+  {t:'我跟俊凱是有點不合，但我才不會為了社長的位子殺人。',press:[['ming','下學期要選社長，他【到處說我壞話】……但這又怎樣？']]},
+  {t:'01:00 那聲巨響我也有聽到，我還以為是樹倒了。',press:[['ming','我在【麻將桌】那邊……喔不對，我是在房間聽到的。','nervous']]}],
   answer:{i:1,ev:['phone']},hint:['看清楚「時間」。有沒有證物顯示 23:00 以後他在二樓？','社長 23:31 在群組說「志明又跑來我房門口吵」。']},
  C:{lines:[
   {t:'01:00 那聲「砰」的巨響，就是社長出事的時間。',press:[['chen','那聲音大得嚇人，整棟樓都聽得到。']]},
-  {t:'當時我們四個在大廳打麻將，阿哲、志明都在，誰都不可能上樓。',press:[['an','麻將是從幾點打到幾點？'],['chen','00:30 開始，打到 01:30 左右吧。']]},
-  {t:'社長的房間門窗都從裡面鎖死，窗戶一整晚都關得好好的。',press:[['an','你怎麼知道窗戶整晚都關著？'],['chen','早上破門進去時就是鎖著的嘛。']]},
+  {t:'當時我們四個在大廳打麻將，阿哲、志明都在，誰都不可能上樓。',press:[['an','麻將是從幾點打到幾點？'],['chen','【00:30】開始，打到【01:30】 左右吧。']]},
+  {t:'社長的房間門窗都從裡面鎖死，窗戶一整晚都關得好好的。',press:[['an','你怎麼知道窗戶整晚都關著？'],['chen','【早上破門】進去時就是鎖著的嘛。']]},
   {t:'那一定是紅傘新娘回來了……二十年前，也是這樣的颱風夜。',e:'nervous',press:[['chen','我在這座山帶團四十年，那件事我永遠忘不了。','nervous']]}],
   answer:{i:2,ev:['carpet']},hint:['想想 203 房地板的「乾濕」。門口跟窗下有什麼不同？','窗下 1 公尺整片濕透、門口卻是乾的——窗戶開了很久。']},
  E:{lines:[
-  {t:'停電那 20 分鐘，我們都待在大廳，誰都沒離開。',e:'nervous',press:[['ying','好、好黑……我很怕，一直坐在沙發上。','nervous']]},
+  {t:'停電那 20 分鐘，我們都待在大廳，誰都沒離開。',e:'nervous',press:[['ying','好、好黑……我很怕，一直坐在【沙發】上。','nervous']]},
   {t:'阿哲哥一直坐在我旁邊，還幫我拿手機照明。',e:'nervous',press:[['an','妳確定他一直都在？'],['ying','……嗯、嗯。','nervous']]},
-  {t:'他整晚都沒有出去淋雨，連外套都是乾的。',press:[['ying','我有摸到他的袖子，是乾的。']]},
-  {t:'志明學長一定是自己在黑暗中摔下樓梯的……',press:[['ying','三樓樓梯很陡，又那麼黑……']]}],
+  {t:'他整晚都沒有出去淋雨，連外套都是【乾的】。',press:[['ying','我有摸到他的袖子，是乾的。']]},
+  {t:'志明學長一定是自己在黑暗中摔下樓梯的……',press:[['ying','【三樓樓梯】很陡，又那麼黑……']]}],
   answer:{i:2,ev:['boots','tile']},hint:['注意「顏色」。他的鞋底卡著什麼顏色的東西？','靴子濕透、卡著紅色碎瓦——只有三樓露台是紅瓦。']},
  D:{lines:[
   {t:'那些「下一個是你」的紙條？跟我一點關係都沒有。',press:[['zhe','我是來拍傳說的，不是來演鬼片的。']]},
-  {t:'我是有帶隨身相印機，拍完現場直接印給客人。',press:[['zhe','攝影師的基本配備而已。']]},
-  {t:'但我的相印機只能印 2×3 吋的小相紙，跟那種紙條不一樣。',press:[['an','你確定是 2×3 吋？'],['zhe','我自己的機器我還不清楚嗎？']]},
-  {t:'會做這種事的，一定是想嚇走我們的老闆娘。',press:[['zhe','她一直不讓人上三樓，不是很可疑嗎？']]}],
+  {t:'我是有帶隨身相印機，拍完現場直接印給客人。',press:[['zhe','攝影師的【基本配備】而已。']]},
+  {t:'但我的相印機只能印 2×3 吋的小相紙，跟那種紙條不一樣。',press:[['an','你確定是【2×3 吋】？'],['zhe','我自己的機器我還不清楚嗎？']]},
+  {t:'會做這種事的，一定是想嚇走我們的老闆娘。',press:[['zhe','她一直不讓人上【三樓】，不是很可疑嗎？']]}],
   answer:{i:2,ev:['printer','note']},hint:['「尺寸」跟「張數」。紙條背面印著什麼？','紙條是 4×6 吋相紙；他的相紙盒也是 4×6，20 張只剩 17 張——正好少 3 張。']}
 };
 /* ---------- scenes ---------- */
