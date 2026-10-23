@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>霧鎖山莊・紅傘之怨</title><!-- build:v10-present -->
+<title>霧鎖山莊・紅傘之怨</title><!-- build:v11-intro -->
 <style>
 html,body,button,.btn,.hot,#box{touch-action:manipulation}
 #log{position:absolute;inset:0;z-index:12;background:rgba(0,0,0,.9);display:none;flex-direction:column;padding:14px;padding-top:max(14px,env(safe-area-inset-top))}#log h2{color:#f5c26b;text-align:center;margin:4px 0 10px;font-size:20px}#logl{flex:1;overflow:auto;font-size:15px;line-height:1.55;-webkit-overflow-scrolling:touch}#logl p{margin:0 0 10px;white-space:pre-wrap}#logl b{color:#ffd77a}
@@ -650,9 +650,19 @@ async function goodEnd(){
  await N(`🏆 評價：${rk} 級（分數 ${sc}）\n心數 ×20 − 提示 ×5 − 失誤 ×2`);
  await choose([['再玩一次','r','red']]);location.reload();
 }
+/* ---------- prologue ---------- */
+async function prologue(){
+ setBg('ext','brightness(.55)');setBGM('inv');
+ await N('—— 序章 ——\n三天前，大學校園。');
+ setPor('an','normal');await say('an','我是周予安，大一。上個月，宿舍連續丟東西，我只靠一張洗衣登記表就揪出了小偷。');
+ setPor('kai','normal');await say('kai','學弟！那件事我聽說了。推理研究社缺一個真正會推理的人——這次社遊你一定要來！');
+ await say('kai','目的地是南投深山的「霧鎖山莊」。二十年前那個「紅傘新娘」的傳說，我們要親眼去查個清楚。');
+ setPor('an','normal');await say('an','傳說什麼的我不信。……不過，我有點好奇，為什麼社長這麼想去那裡。');
+ setPor(null);await N('就這樣，我跟著推理研究社上了山。\n誰也沒想到，颱風會比預報早一天到。');
+}
 /* ---------- intro ---------- */
 async function intro(){
- $('#title').style.display='none';await chapter('第一章<br>紅傘新娘');
+ $('#title').style.display='none';await prologue();await chapter('第一章<br>紅傘新娘');
  setBg('ext');SFX.thunder();
  await N('南投深山，颱風夜。我們推理研究社的社遊，被困在了老旅館「霧鎖山莊」。唯一的山路，被土石流沖斷了。');
  setPor('an','normal');await say('an','我是周予安，推理研究社的社員。……沒想到第一次社遊，就遇上這種事。');
