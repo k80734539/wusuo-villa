@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>霧鎖山莊・紅傘之怨</title><!-- build:v7-polish -->
+<title>霧鎖山莊・紅傘之怨</title><!-- build:v8-music -->
 <style>
 html,body,button,.btn,.hot,#box{touch-action:manipulation}
 #log{position:absolute;inset:0;z-index:12;background:rgba(0,0,0,.9);display:none;flex-direction:column;padding:14px;padding-top:max(14px,env(safe-area-inset-top))}#log h2{color:#f5c26b;text-align:center;margin:4px 0 10px;font-size:20px}#logl{flex:1;overflow:auto;font-size:15px;line-height:1.55;-webkit-overflow-scrolling:touch}#logl p{margin:0 0 10px;white-space:pre-wrap}#logl b{color:#ffd77a}
@@ -104,42 +104,83 @@ const SFX={blip:()=>tone(620+Math.random()*80,.04,'square',.02),
  wrong:()=>{tone(200,.3,'sawtooth',.12,90);setTimeout(()=>tone(120,.4,'sawtooth',.12,60),200)},
  tap:()=>tone(900,.05,'sine',.06),
  thunder:()=>noise(1.8,.6,300),
+ sting:()=>{if(!AC)return;duck();noise(1.2,.5,600);[50,51,56,57].forEach(m=>tone(mtof(m+12),1.4,'sawtooth',.035,mtof(m)));tone(55,1.5,'sine',.25,30)},
  sad:()=>{[523,466,392,349].forEach((f,i)=>setTimeout(()=>tone(f,.5,'triangle',.08),i*350))},
  win:()=>{[523,659,784,1046,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,.3,'triangle',.1),i*160))}};
-/* ---------- BGM (procedural) ---------- */
-let MB=null,DK=null,bgmOn=localStorage.getItem('wusuo_bgm')!=='off',bgmCur=null,bgmT=null,step=0,nextT=0;const TH={};
+/* ---------- BGM (procedural, 霧鎖 original themes) ---------- */
+let MB=null,DK=null,RV=null,bgmOn=localStorage.getItem('wusuo_bgm')!=='off',bgmCur=null,bgmT=null,NB=null;const TH={};
 const mtof=m=>440*Math.pow(2,(m-69)/12);
+const THEMES=['inv','dread','test','final','sad','good'];
 function duck(){if(!DK)return;const t=AC.currentTime;DK.gain.cancelScheduledValues(t);DK.gain.setTargetAtTime(.35,t,.02);DK.gain.setTargetAtTime(1,t+.35,.25)}
-function mInit(){if(MB)return;DK=AC.createGain();MB=AC.createGain();MB.gain.value=bgmOn?1:0;DK.connect(MB).connect(AC.destination);
- for(const k of ['inv','test','final']){const g=AC.createGain();g.gain.value=0;g.connect(DK);TH[k]={g}}
- nextT=AC.currentTime+.1;bgmT=setInterval(sched,40)}
-function note(th,m,t,d,type,v,o={}){const c=AC,os=c.createOscillator(),g=c.createGain();os.type=type;os.frequency.setValueAtTime(mtof(m),t);
+function mkIR(){const L=AC.sampleRate*2.8,b=AC.createBuffer(2,L,AC.sampleRate);for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<L;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/L,3)}return b}
+function mInit(){if(MB)return;const cp=AC.createDynamicsCompressor();cp.threshold.value=-14;cp.ratio.value=4;cp.connect(AC.destination);
+ DK=AC.createGain();MB=AC.createGain();MB.gain.value=bgmOn?1:0;DK.connect(MB).connect(cp);
+ RV=AC.createConvolver();RV.buffer=mkIR();const rg=AC.createGain();rg.gain.value=.55;RV.connect(rg).connect(DK);
+ NB=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate);const nd=NB.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;
+ for(const k of THEMES){const g=AC.createGain();g.gain.value=0;g.connect(DK);const s=AC.createGain();s.gain.value=k==='final'||k==='test'?.25:.6;g.connect(s).connect(RV);TH[k]={g,step:0,nextT:0,until:0}}
+ bgmT=setInterval(sched,40)}
+function note(th,m,t,d,type,v,o={}){const c=AC,os=c.createOscillator(),g=c.createGain();os.type=type;os.frequency.setValueAtTime(mtof(m),t);if(o.det)os.detune.value=o.det;
  if(o.slide)os.frequency.setValueAtTime(mtof(m-1),t),os.frequency.linearRampToValueAtTime(mtof(m),t+.08);
  let n=os;if(o.lp){const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=o.lp;os.connect(f);n=f}
- if(o.vib){const l=c.createOscillator(),lg=c.createGain();l.frequency.value=5.5;lg.gain.value=mtof(m)*.012;l.connect(lg).connect(os.frequency);l.start(t);l.stop(t+d+.3)}
+ if(o.vib){const l=c.createOscillator(),lg=c.createGain();l.frequency.value=o.vibF||5.5;lg.gain.value=mtof(m)*(o.vibD||.012);l.connect(lg).connect(os.frequency);l.start(t);l.stop(t+d+.3)}
+ if(o.trem){const l=c.createOscillator(),lg=c.createGain();l.frequency.value=o.trem;lg.gain.value=v*.6;l.connect(lg).connect(g.gain);l.start(t);l.stop(t+d+.1)}
  const a=o.a||.005;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+a);
- if(o.sus){g.gain.setValueAtTime(v,t+d*.7);g.gain.linearRampToValueAtTime(0,t+d)}else g.gain.exponentialRampToValueAtTime(.0001,t+d);
+ if(o.sus){g.gain.setValueAtTime(v,t+Math.max(a,d*.7));g.gain.linearRampToValueAtTime(0,t+d)}else g.gain.exponentialRampToValueAtTime(.0001,t+d);
  n.connect(g).connect(TH[th].g);os.start(t);os.stop(t+d+.05)}
-function drum(th,t,kind,v){const c=AC;if(kind==='k'){const o=c.createOscillator(),g=c.createGain();o.frequency.setValueAtTime(140,t);o.frequency.exponentialRampToValueAtTime(40,t+.15);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+.2);o.connect(g).connect(TH[th].g);o.start(t);o.stop(t+.25);return}
- const len=kind==='s'?.15:.04,b=c.createBuffer(1,c.sampleRate*len,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
- const s=c.createBufferSource();s.buffer=b;const f=c.createBiquadFilter();f.type=kind==='s'?'bandpass':'highpass';f.frequency.value=kind==='s'?1800:7000;const g=c.createGain();g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+len);s.connect(f).connect(g).connect(TH[th].g);s.start(t)}
-// melodies: midi or 0 rest, one entry per 8th note
-const INV={bpm:66,lead:[74,0,72,69,67,0,69,0, 72,0,74,0,69,0,0,0, 67,0,69,72,74,0,77,74, 72,0,69,0,67,0,0,0, 69,0,67,64,62,0,64,0, 67,0,69,0,72,0,69,67, 62,0,0,0,64,67,69,0, 62,0,0,0,0,0,0,0],
- chords:[[50,57,62],[48,55,60],[46,53,58],[45,52,57]]};
-const TST={bpm:96,bass:[45,45,45,46,45,45,48,46],stab:[69,0,0,70,0,0,69,0, 0,0,72,0,70,0,69,0]};
-const FIN={bpm:138,bass:[40,40,52,40,43,43,55,43,45,45,57,45,47,47,59,47],lead:[76,0,76,79,0,76,74,0, 72,0,71,0,72,74,0,0, 76,0,76,79,0,81,79,0, 83,0,81,79,76,0,0,0, 72,0,72,74,0,76,74,72, 71,0,67,0,71,74,0,0, 76,79,81,0,79,76,74,0, 76,0,0,0,0,0,0,0]};
-function sched(){if(!AC||!bgmCur)return;while(nextT<AC.currentTime+.15){play8(bgmCur,step,nextT);const bpm={inv:INV,test:TST,final:FIN}[bgmCur].bpm;nextT+=30/bpm;step++}}
-function play8(th,s,t){const e=30/{inv:INV,test:TST,final:FIN}[th].bpm;
- if(th==='inv'){const ch=INV.chords[Math.floor(s/16)%4];// guitar arpeggio
-  const ar=[0,1,2,1];note(th,ch[ar[s%4]]+12,t,1.2,'triangle',.06,{lp:2000});if(s%16===0)ch.forEach(m=>note(th,m,t,e*16,'sine',.025,{a:.8,sus:1}));
-  const m=INV.lead[s%INV.lead.length];if(m)note(th,m,t,e*2.6,'sawtooth',.045,{lp:1500,vib:1,a:.09,sus:1,slide:1})}
- else if(th==='test'){const b=TST.bass[s%8];note(th,b,t,e*.9,'sawtooth',.07,{lp:500});if(s%2)drum(th,t,'h',.05);
-  const m=TST.stab[s%16];if(m)note(th,m,t,e*.6,'square',.035,{lp:2200});if(s%32===0)note(th,57,t,e*32,'sine',.03,{a:1,sus:1})}
- else {const b=FIN.bass[s%16];note(th,b,t,e*.8,'sawtooth',.08,{lp:900});if(s%4===0)drum(th,t,'k',.5);if(s%4===2)drum(th,t,'s',.25);drum(th,t,'h',.04);
-  const m=FIN.lead[s%FIN.lead.length];if(m)note(th,m,t,e*1.5,'square',.04,{lp:3500,vib:1})}}
+// soft piano: triangle + sine octave, fast attack, long decay
+function pno(th,m,t,v,d=2.2){note(th,m,t,d,'triangle',v,{lp:2400});note(th,m+12,t,d*.5,'sine',v*.35)}
+// music box: bright sine + inharmonic partial, short-ish decay
+function mbox(th,m,t,v){note(th,m,t,1.6,'sine',v);note(th,m+24,t,.35,'sine',v*.25);note(th,m+31,t,.18,'triangle',v*.08)}
+// temple bell: inharmonic partials, very long decay
+function bell(th,m,t,v){[[1,1],[2.76,.5],[5.4,.25],[8.93,.12]].forEach(([r,a])=>{const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=mtof(m)*r;g.gain.setValueAtTime(v*a,t);g.gain.exponentialRampToValueAtTime(.0001,t+6/r**.3);o.connect(g).connect(TH[th].g);o.start(t);o.stop(t+7)})}
+// wind: filtered noise swell with sweeping bandpass
+function wind(th,t,dur,v){const s=AC.createBufferSource();s.buffer=NB;s.loop=true;const f=AC.createBiquadFilter();f.type='bandpass';f.Q.value=1.2;f.frequency.setValueAtTime(300,t);f.frequency.linearRampToValueAtTime(900+Math.random()*500,t+dur*.5);f.frequency.linearRampToValueAtTime(250,t+dur);
+ const g=AC.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+dur*.5);g.gain.linearRampToValueAtTime(0,t+dur);s.connect(f).connect(g).connect(TH[th].g);s.start(t);s.stop(t+dur+.1)}
+function drum(th,t,kind,v){const c=AC;if(kind==='k'||kind==='hb'){const o=c.createOscillator(),g=c.createGain();const f0=kind==='hb'?75:140,f1=kind==='hb'?32:40;o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+.15);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+(kind==='hb'?.3:.2));o.connect(g).connect(TH[th].g);o.start(t);o.stop(t+.35);return}
+ const len=kind==='s'?.15:kind==='tk'?.02:.04,s=c.createBufferSource();s.buffer=NB;const f=c.createBiquadFilter();f.type=kind==='s'?'bandpass':'highpass';f.frequency.value=kind==='s'?1800:kind==='tk'?4500:7000;if(kind==='tk')f.Q.value=8;const g=c.createGain();g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+len);s.connect(f).connect(g).connect(TH[th].g);s.start(t,Math.random());s.stop(t+len+.02)}
+// ---- score data (all original; one entry per 8th note, 0 = rest) ----
+const INV={bpm:58,lead:[81,0,0,76,0,0,77,0, 76,0,74,0,72,0,0,0, 74,0,0,71,0,0,72,0, 71,0,69,0,68,0,0,0, 81,0,0,76,0,0,77,0, 79,0,77,0,76,0,74,0, 72,0,71,0,69,0,68,0, 69,0,0,0,0,0,0,0],
+ ch:[[45,52,60],[44,52,59],[41,48,57],[40,47,56]]};
+const DRD={bpm:72,cl:[[50,51,56],[49,55,56],[50,53,59],[48,54,55]]};
+const TST={bpm:112,ch:[[40,55,59,64],[36,55,60,64],[45,57,60,64],[47,57,63,66]]};
+const FIN={bpm:140,roots:[45,41,43,40],lead:[69,0,72,0,76,0,75,76, 0,0,72,0,74,0,72,71, 72,0,69,0,67,0,69,0, 71,0,72,0,74,0,0,0, 69,0,72,0,76,0,75,76, 0,0,79,0,81,0,79,77, 76,0,77,0,79,0,81,0, 83,0,84,0,88,0,0,0]};
+const SAD={bpm:64,lead:[69,0,70,69,67,0,65,0, 64,0,65,67,69,0,0,0, 74,0,72,70,69,0,67,0, 65,0,64,65,67,0,0,0, 69,0,70,72,74,0,77,0, 76,0,74,72,70,0,69,0, 67,0,65,64,65,0,62,0, 62,0,0,0,0,0,0,0],
+ ch:[[38,0,3,7],[34,0,4,7],[41,0,4,7],[36,0,4,7],[38,0,3,7],[43,0,3,7],[33,0,4,7],[38,0,3,7]]};
+const GOOD={bpm:80,lead:[72,0,74,76,0,79,0,76, 77,0,76,74,72,0,0,0, 69,0,71,72,0,76,0,74, 72,0,71,69,67,0,0,0, 72,0,74,76,0,79,0,81, 79,0,77,76,74,0,72,74, 76,0,74,0,72,0,71,0, 72,0,0,0,0,0,0,0],
+ ch:[[36,0,4,7],[41,0,4,7],[45,0,3,7],[43,0,4,7],[41,0,4,7],[36,0,4,7],[43,0,4,7],[36,0,4,7]]};
+const BPM={inv:INV.bpm,dread:DRD.bpm,test:TST.bpm,final:FIN.bpm,sad:SAD.bpm,good:GOOD.bpm};
+function sched(){if(!AC)return;const now=AC.currentTime;for(const k of THEMES){const T=TH[k];if(k!==bgmCur&&now>T.until)continue;if(T.nextT<now)T.nextT=now+.05;
+ while(T.nextT<now+.15){play8(k,T.step,T.nextT);T.nextT+=30/BPM[k];T.step++}}}
+function play8(th,s,t){const e=30/BPM[th];
+ if(th==='inv'){const ch=INV.ch[(s>>4)%4];
+  if(s%16===0){note(th,38,t,e*16,'sine',.06,{a:2,sus:1});note(th,45,t,e*16,'sine',.03,{a:2,sus:1});pno(th,ch[0],t,.07,4)}
+  if(s%4===2)pno(th,ch[1+((s>>2)%2)],t,.035,2);
+  const m=INV.lead[s%64];if(m)mbox(th,m,t,.06);
+  if(s%32===8)wind(th,t,e*20,.05);if(s%64===40)bell(th,45,t,.05)}
+ else if(th==='dread'){const cl=DRD.cl[(s>>4)%4];
+  if(s%4===0)drum(th,t,'hb',.45);if(s%4===1)drum(th,t+.02,'hb',.28);
+  if(s%16===0)cl.forEach((m,i)=>note(th,m+12,t,e*17,'sawtooth',.018,{lp:1100,a:e*6,sus:1,vib:1,vibF:4+i,vibD:.006,det:(i-1)*9}));
+  if(s%16===0)note(th,26,t,e*16,'sine',.08,{a:1,sus:1});
+  if(s%32===20)note(th,86,t,e*10,'sine',.012,{a:e*4,sus:1,trem:9});
+  if(s%32===4)wind(th,t,e*24,.04);if(s%64===48)bell(th,37,t,.035)}
+ else if(th==='test'){const ch=TST.ch[(s>>4)%4];
+  note(th,ch[0],t,e*.85,'sawtooth',.07,{lp:s%2?350:600});drum(th,t,'tk',s%2?.05:.1);
+  const ar=[1,2,3,2];note(th,ch[ar[s%4]]+12,t,e*1.6,'triangle',.045,{lp:2600});
+  if(s%16===0)note(th,ch[0]+24,t,e*16,'sawtooth',.012,{lp:900,a:e*4,sus:1});if(s%4===0)drum(th,t,'k',.2)}
+ else if(th==='final'){const L=(s>>6)%4,tr=[0,0,2,2][L],r=FIN.roots[(s>>4)%4]+tr;
+  note(th,r+(s%2?12:0),t,e*.8,'sawtooth',.08,{lp:1100});if(s%4===0)drum(th,t,'k',.55);if(s%4===2)drum(th,t,'s',.28);drum(th,t,'h',s%2?.03:.05);
+  if(s%16===0)[r+12,r+19,r+24].forEach((m,i)=>note(th,m+(i===1&&r%12===4?0:0),t,e*16,'sawtooth',.012,{lp:1600,a:.3,sus:1,det:(i-1)*7}));
+  const m=FIN.lead[s%64];if(m){note(th,m+tr,t,e*1.7,'square',.035,{lp:3200,vib:1});note(th,m+tr-12,t,e*1.7,'sawtooth',.02,{lp:1800})}}
+ else {const D=th==='sad'?SAD:GOOD,c=D.ch[(s>>3)%8],r=c[0];
+  if(s%8===0)note(th,r-12+12,t,e*8,'sine',.05,{a:.05});
+  const lh=[r+12,r+12+c[2],r+12+c[3],r+24,r+12+c[3],r+12+c[2],r+12+c[3],r+24][s%8];pno(th,lh,t,.025,1.6);
+  const m=D.lead[s%64];if(m)pno(th,m,t,th==='sad'?.075:.065,2.6);
+  if(s%16===0)[r+12,r+12+c[2],r+12+c[3]].forEach(n=>note(th,n+12,t,e*16,'triangle',.012,{lp:1400,a:1,sus:1}));
+  if(th==='good'&&s%32===31)mbox(th,84,t,.03)}}
 function setBGM(k){if(!AC)return;mInit();if(k===bgmCur)return;const t=AC.currentTime;
- for(const n in TH){TH[n].g.gain.cancelScheduledValues(t);TH[n].g.gain.setValueAtTime(TH[n].g.gain.value,t);TH[n].g.gain.linearRampToValueAtTime(n===k?(n==='final'?.8:1):0,t+1.5)}
- if(k&&bgmCur!==k&&!(bgmCur&&k))step=0;bgmCur=k;window.__bgm=k}
+ for(const n in TH){const g=TH[n].g.gain;g.cancelScheduledValues(t);g.setValueAtTime(g.value,t);g.linearRampToValueAtTime(n===k?1:0,t+2);if(n===bgmCur)TH[n].until=t+2.2}
+ if(k&&TH[k].until<t){TH[k].step=0;TH[k].nextT=t+.05}
+ bgmCur=k;window.__bgm=k}
 function toggleBGM(){bgmOn=!bgmOn;localStorage.setItem('wusuo_bgm',bgmOn?'on':'off');if(MB)MB.gain.setTargetAtTime(bgmOn?1:0,AC.currentTime,.1);$('#bgmBtn').textContent=bgmOn?'♪ 開':'♪ 關'}
 
 function rsize(){}
@@ -307,7 +348,7 @@ const SC={
   {id:'down',x:50,y:74,w:34,h:10,l:'回大廳',f:()=>go('lobby')}],people:()=>[]}
 };
 let curHots=null;
-function renderScene(){setBGM('inv');const sc=SC[S.scene];$('#place').textContent='📍 '+sc.name;const H=$('#hs');H.innerHTML='';
+function renderScene(){setBGM(S.flags.ch2?'dread':'inv');const sc=SC[S.scene];$('#place').textContent='📍 '+sc.name;const H=$('#hs');H.innerHTML='';
  sc.hots().forEach(h=>{const d=document.createElement('div');d.className='hot'+(S.flags['h_'+h.id]?' done':'');d.dataset.id=h.id;Object.assign(d.style,{left:h.x+'%',top:h.y+'%',width:h.w+'%',height:h.h+'%'});d.innerHTML=`<span>${h.l}</span>`;onTap(d,()=>act(async()=>{S.flags['h_'+h.id]=1;await h.f()}));H.appendChild(d)});
  const b=$('#bar');b.innerHTML='';b.style.display='flex';
  sc.people().forEach(p=>{const x=document.createElement('button');x.className='btn';x.dataset.talk=p;x.textContent='💬 '+CH[p].slice(-2);onTap(x,()=>act(()=>talk(p)));b.appendChild(x)});
@@ -382,13 +423,13 @@ async function todo(){
  await N('（要揭穿兇手還不夠。'+(need.length?'還沒問完：'+need.join('、')+'。':'')+(miss.length?'還沒查：'+[...new Set(miss)].join('、')+'。':'')+'）')}
 /* ---------- chapter 2 ---------- */
 async function chapter2(){
- S.flags.ch2=1;await chapter('第二章<br>下一個是你');setBg('lobby','brightness(.6)');setBGM('test');
+ S.flags.ch2=1;await chapter('第二章<br>下一個是你');setBg('lobby','brightness(.6)');setBGM('dread');SFX.sting();
  await N('夜裡，風雨更大了。救難隊說，最快明天中午才能上山。');
  await N('晚上九點，三張紙條被塞進了志明、玉珍和我的門縫。');
  await getEv('note');
  await say('ming','哼，裝神弄鬼。我早就知道兇手是誰了！明天我就公布！','normal');
  SFX.thunder();setBg('lobby','brightness(.15)');await N('22:10——啪。整棟山莊陷入一片黑暗。');
- await N('……二十分鐘後電來了。三樓樓梯口傳來尖叫。');
+ SFX.sting();await N('……二十分鐘後電來了。三樓樓梯口傳來尖叫。');
  setBg('f3','brightness(.8)');await N('志明倒在三樓樓梯口，額頭撞傷，但還有意識。\n他身邊，撐開著一把紅傘。');
  await say('ming','（額頭包著紗布）有、有人從後面推我……','nervous');
  await say('zhen','……三樓的鎖，我開了。你們要查就查吧。','nervous');
@@ -443,7 +484,7 @@ async function reveal(){
  setBg('f3','brightness(.7)');await N('第二天晚上，他塞了 3 張紙條，又趁停電從三樓露台繞到樓梯口，推倒了說「知道兇手是誰」的志明。');
  setBg('lobby');
  await say('zhe','……呵。','broken');
- await say('zhe','我姊姊，蘇雨晴。婚禮那天，她撐著紅傘在崖邊等，等了一整夜，新郎都沒有來。','broken');
+ setBGM('sad');await say('zhe','我姊姊，蘇雨晴。婚禮那天，她撐著紅傘在崖邊等，等了一整夜，新郎都沒有來。','broken');
  await say('zhe','第二天，她就從那裡掉下去了。那年我 8 歲，手裡拿著她送我的玩具相機。','broken');
  await say('zhe','二十年後，我在網路上看到黃國雄的兒子要來霧鎖山莊辦社遊……還在社團群組裡拿「紅傘新娘」開玩笑。','broken');
  await say('zhe','我只是想讓他道歉！可是他笑了……他說「我爸運氣好，沒娶那個瘋女人」……','broken',{shake:true});
@@ -459,7 +500,7 @@ async function reveal(){
  return goodEnd();
 }
 async function badEnd(){
- S.ended=true;$('#hs').innerHTML='';$('#bar').style.display='none';setBGM(null);SFX.sad();
+ S.ended=true;$('#hs').innerHTML='';$('#bar').style.display='none';setBGM('dread');SFX.sad();
  setBg('lobby','grayscale(.8) brightness(.6)');
  await say('zhe','推理社的小偵探，遊戲結束了。','normal');setPor(null);
  await N('天亮後救難隊上山，案子以「意外」結案。\n斷崖上的紅傘，在霧裡輕輕搖晃……');
@@ -471,7 +512,7 @@ async function badEnd(){
 }
 function rank(){const sc=Math.max(0,S.hearts*20-S.hints*5-S.miss*2);return [sc,sc>=95?'S':sc>=75?'A':sc>=50?'B':'C']}
 async function goodEnd(){
- setBGM('inv');SFX.win();
+ setBGM('good');SFX.win();
  await chapter('隔天中午');
  setBg('ext','brightness(1.2)');$('#place').textContent='📍 霧散了';rainOn=false;if(rainNode)rainNode.gain.value=0;
  await N('颱風走了，救難隊打通了山路。阿哲沒有反抗，自己走上了警車。');
@@ -493,7 +534,7 @@ async function intro(){
  setPor('an','normal');await say('an','我是周予安，推理研究社的社員。……沒想到第一次社遊，就遇上這種事。');
  setBg('lobby');await N('晚上，導遊陳伯講了山莊的傳說——二十年前，一個新娘撐著紅傘，從後山斷崖跳了下去。');
  setPor('kai','normal');await say('kai','今晚來玩試膽遊戲！誰先怕誰請宵夜～');await N('社長黃俊凱帶頭玩了「試膽遊戲」，一直鬧到午夜。凌晨 01:00，一聲巨響，大家都以為是樹被吹倒了。');
- setPor(null);setBg('room','brightness(.8)');SFX.thunder();
+ setPor(null);setBg('room','brightness(.8)');setBGM('dread');SFX.sting();
  await N('隔天早上，社長沒有出現。撞開反鎖的 203 號房——他倒在地上，已經沒有呼吸。\n身旁，是一把濕透的紅傘。');
  await say('an','門窗都從裡面鎖著……紅傘新娘？不，這世界上沒有鬼。','broken');
  await say('an','路斷了，誰也離不開。兇手，就在我們之中。','broken');
