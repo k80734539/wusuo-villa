@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>霧鎖山莊・紅傘之怨</title><!-- build:v2-art -->
+<title>霧鎖山莊・紅傘之怨</title><!-- build:v3-norain -->
 <style>
 html,body,button,.btn,.hot,#box{touch-action:manipulation}
 #log{position:absolute;inset:0;z-index:12;background:rgba(0,0,0,.9);display:none;flex-direction:column;padding:14px;padding-top:max(14px,env(safe-area-inset-top))}#log h2{color:#f5c26b;text-align:center;margin:4px 0 10px;font-size:20px}#logl{flex:1;overflow:auto;font-size:15px;line-height:1.55;-webkit-overflow-scrolling:touch}#logl p{margin:0 0 10px;white-space:pre-wrap}#logl b{color:#ffd77a}
@@ -8,7 +8,7 @@ html,body,button,.btn,.hot,#box{touch-action:manipulation}
 html,body{margin:0;height:100%;background:#000;color:#fff;font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;overflow:hidden}
 #app{position:relative;margin:0 auto;height:100%;max-width:56.25vh;overflow:hidden;background:#000}
 #bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity .5s,filter .5s}
-#rain{position:absolute;inset:0;pointer-events:none}
+#rain{display:none}
 #por{position:absolute;left:50%;bottom:23%;height:62%;transform:translateX(-50%);transition:opacity .25s,transform .25s;opacity:0;filter:drop-shadow(0 0 12px rgba(0,0,0,.7))}
 #por.on{opacity:1}
 #por.shake{animation:pshake .4s}
@@ -136,7 +136,7 @@ function toggleBGM(){bgmOn=!bgmOn;localStorage.setItem('wusuo_bgm',bgmOn?'on':'o
 const rc=$('#rain'),rx=rc.getContext('2d');let drops=[];
 function rsize(){rc.width=rc.clientWidth;rc.height=rc.clientHeight;drops=Array.from({length:90},()=>({x:Math.random()*rc.width,y:Math.random()*rc.height,s:8+Math.random()*10}))}
 addEventListener('resize',rsize);
-let rainOn=true;
+let rainOn=false;
 (function rl(){rx.clearRect(0,0,rc.width,rc.height);if(rainOn){rx.strokeStyle='rgba(180,200,255,.35)';rx.lineWidth=1;rx.beginPath();for(const d of drops){rx.moveTo(d.x,d.y);rx.lineTo(d.x-3,d.y+d.s);d.y+=d.s*1.2;d.x-=2;if(d.y>rc.height){d.y=-20;d.x=Math.random()*rc.width*1.2}}rx.stroke()}requestAnimationFrame(rl)})();
 /* ---------- state ---------- */
 const S={ev:[],flags:{},hearts:5,scene:null,hints:0,miss:0};
