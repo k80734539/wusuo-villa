@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>霧鎖山莊・紅傘之怨</title><!-- build:v5-save -->
+<title>霧鎖山莊・紅傘之怨</title><!-- build:v6-menu -->
 <style>
 html,body,button,.btn,.hot,#box{touch-action:manipulation}
 #log{position:absolute;inset:0;z-index:12;background:rgba(0,0,0,.9);display:none;flex-direction:column;padding:14px;padding-top:max(14px,env(safe-area-inset-top))}#log h2{color:#f5c26b;text-align:center;margin:4px 0 10px;font-size:20px}#logl{flex:1;overflow:auto;font-size:15px;line-height:1.55;-webkit-overflow-scrolling:touch}#logl p{margin:0 0 10px;white-space:pre-wrap}#logl b{color:#ffd77a}
@@ -506,7 +506,7 @@ function applySave(d){for(const k of Object.keys(S))delete S[k];Object.assign(S,
  if(typeof T!=='undefined')for(const k in T)if(T[k])T[k]._h=(d.H||{})[k]||0;
  if(typeof d.bgm==='boolean'&&d.bgm!==bgmOn){bgmOn=d.bgm;LS.set(SKEY+'_bgm',bgmOn?'on':'off');if(MB&&AC)MB.gain.value=bgmOn?1:0}
  $('#bgmBtn').textContent=bgmOn?'♪ 開':'♪ 關';$('#evBtn').style.display=S.ev.length?'':'none';
- $('#title').style.display='none';closeSv();hearts();setBg(SC[S.scene].bg);window.__fast=window.__fast||false;renderScene()}
+ $('#title').style.display='none';$('#menuBtn').style.display='';closeSv();hearts();setBg(SC[S.scene].bg);window.__fast=window.__fast||false;renderScene()}
 function doLoad(d){if(started){LS.set(SKEY+'_pending',JSON.stringify(d));location.reload()}else{try{ac()}catch(e){}started=true;applySave(d)}}
 let started=false;
 /* overlay UI */
@@ -529,17 +529,17 @@ function openSv(mode){sv.innerHTML=`<h2>${mode==='save'?'💾 存檔':'📂 讀�
  const p=document.createElement('div');p.id='menuPop';document.getElementById('app').appendChild(p);
  const sb=document.createElement('button');sb.className='hb';sb.id='saveBtn';sb.textContent='💾 存檔';const ldb=document.createElement('button');ldb.className='hb';ldb.id='loadBtn';ldb.textContent='📂 讀檔';
  lb.textContent='📜 回顧';p.append(sb,ldb,lb,bb);
- m.onclick=e=>{e.stopPropagation();p.style.display=p.style.display==='flex'?'none':'flex'};
+ m.onclick=e=>{e.stopPropagation();sb.style.display=started?'':'none';p.style.display=p.style.display==='flex'?'none':'flex'};
  p.addEventListener('click',e=>{e.stopPropagation();setTimeout(()=>p.style.display='none',0)});
  sb.onclick=()=>openSv('save');ldb.onclick=()=>openSv('load')})();
 /* title */
 const tl=$('#title'),cb=document.createElement('button'),lb2=document.createElement('button');
 cb.className='btn red';cb.id='contBtn';cb.textContent='▶ 繼續遊戲';lb2.className='btn';lb2.id='titleLoadBtn';lb2.textContent='📂 讀取進度';
 [cb,lb2].forEach(b=>{b.style.flex='none';b.style.width='60%';b.style.marginBottom='10px'});tl.insertBefore(lb2,$('#startBtn'));tl.insertBefore(cb,lb2);
-function refreshTitle(){const h=!!latest();cb.style.display=lb2.style.display=h?'':'none';$('#startBtn').textContent=h?'新遊戲':START_TXT;$('#startBtn').className=h?'btn':'btn red'}
+function refreshTitle(){$('#menuBtn').style.display=started?'':'none';const h=!!latest();cb.style.display=lb2.style.display=h?'':'none';$('#startBtn').textContent=h?'新遊戲':START_TXT;$('#startBtn').className=h?'btn':'btn red'}
 const START_TXT=$('#startBtn').textContent;
 cb.onclick=()=>{const d=latest();if(d)doLoad(d)};lb2.onclick=()=>openSv('load');
-$('#startBtn').onclick=async()=>{if(latest()&&!(await ask('開始新遊戲？<br>（存檔不會被刪除，但自動存檔會被覆蓋）')))return;started=true;ac();rsize();await intro();renderScene()};
+$('#startBtn').onclick=async()=>{if(latest()&&!(await ask('開始新遊戲？<br>（存檔不會被刪除，但自動存檔會被覆蓋）')))return;started=true;$('#menuBtn').style.display='';ac();rsize();await intro();renderScene()};
 const _rs=renderScene;renderScene=function(){_rs();snapshot()};
 refreshTitle();
 (()=>{const p=LS.get(SKEY+'_pending');if(!p)return;LS.del(SKEY+'_pending');try{const d=JSON.parse(p);if(d&&d.v===SAVE_V&&SC[d.S.scene]){started=true;applySave(d)}}catch(e){}})();
