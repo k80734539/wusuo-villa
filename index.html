@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>霧鎖山莊・紅傘之怨</title><!-- build:v11-intro -->
+<title>霧鎖山莊・紅傘之怨</title><!-- build:v12-mainplot -->
 <style>
 html,body,button,.btn,.hot,#box{touch-action:manipulation}
 #log{position:absolute;inset:0;z-index:12;background:rgba(0,0,0,.9);display:none;flex-direction:column;padding:14px;padding-top:max(14px,env(safe-area-inset-top))}#log h2{color:#f5c26b;text-align:center;margin:4px 0 10px;font-size:20px}#logl{flex:1;overflow:auto;font-size:15px;line-height:1.55;-webkit-overflow-scrolling:touch}#logl p{margin:0 0 10px;white-space:pre-wrap}#logl b{color:#ffd77a}
@@ -164,13 +164,14 @@ html,body{margin:0;height:100%;background:#000;color:#fff;font-family:"PingFang 
 @keyframes hba{to{transform:translate(-26px,40px) rotate(-35deg);opacity:0}}@keyframes hbb{to{transform:translate(26px,44px) rotate(35deg);opacity:0}}
 @media (prefers-reduced-motion:reduce){#ep *,#ep.on *{animation:none!important;transition:none!important}#ep.p1 .ci,#ep.p2 .ci{transform:skewY(-6deg)}#ep.p2 .tx,#ep.p3 .cd{opacity:1;transform:none}#ep.p3 .ci,#ep.p3 .tx{opacity:0}#ep.p1 .sl{opacity:.4}#ep.wr .x,#ep.wr .rd{opacity:1}#ep.wr.hl .hbk .b{opacity:0}#app.shk3,#por.tilt,#por.smug{animation:none!important}#mlist .ev{transition:none}#presentBtn.rdy{animation:none}}
 </style>
+<style id="mpc">#docv{position:absolute;inset:0;z-index:25;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.72);padding:18px}#docv .pp{width:100%;max-width:340px;background:linear-gradient(170deg,#f4ecd8,#ddd0b0);color:#2b2418;border-radius:6px;padding:18px 18px 14px;box-shadow:0 10px 30px rgba(0,0,0,.6);font-size:15px;line-height:1.65;text-align:center}#docv .lg{margin:0 auto 4px;width:120px;height:80px;background:#1f2a3c;border-radius:10px;display:flex;align-items:center;justify-content:center}#docv h3{margin:6px 0 2px;font-size:20px;letter-spacing:4px}#docv .bd{text-align:left;white-space:pre-line;margin-top:8px;border-top:1px dashed #8a7a5a;padding-top:8px}#docv .tp{margin-top:10px;font-size:12px;color:#6a5a3a}</style>
 </head><body><div id="app">
 <div id="bg"></div>
 <img id="por" alt="">
 <div id="hs"></div>
 <div id="hud"><div id="place"></div><div><span id="hearts"></span><button class="hbk" id="logBtn" style="background:#2a3a6a">📜 回顧</button><button class="hb" id="bgmBtn" style="background:#2a3a6a">♪ 開</button><button class="hb" id="evBtn" style="display:none">📒 證物</button></div></div>
 <div id="bar"></div>
-<div id="tbar"></div><div id="tban"></div><div id="ep"><div class="bg"></div><div class="sl"></div><div class="fl"></div><div class="rd"></div><div class="ci"><i></i><img alt=""></div><div class="tx"><b>就是這個！</b></div><div class="cd"></div><div class="st"></div><div class="x">✗</div><div class="hbk"><span class="a">💔</span></div><div class="tap">點一下跳過 ▶</div></div><div id="burst"><div class="sl"></div><div class="bb"></div><div class="bt">追問！</div></div>
+<div id="tbar"></div><div id="tban"></div><div id="docv"><div class="pp"><div class="lg"><svg viewBox="0 0 120 80" width="120" height="80" aria-label="雲嶺開發標誌"><g fill="none" stroke="#c9d6e8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M28 50a14 14 0 0 1 4-27a20 20 0 0 1 36-6a16 16 0 0 1 24 14a12 12 0 0 1-2 19z"/><path d="M22 66l22-18l14 10l14-14l26 22" stroke="#8fa3bf"/></g></svg></div><h3>雲嶺開發</h3><div class="bd"></div><div class="tp">點一下關閉</div></div></div><div id="ep"><div class="bg"></div><div class="sl"></div><div class="fl"></div><div class="rd"></div><div class="ci"><i></i><img alt=""></div><div class="tx"><b>就是這個！</b></div><div class="cd"></div><div class="st"></div><div class="x">✗</div><div class="hbk"><span class="a">💔</span></div><div class="tap">點一下跳過 ▶</div></div><div id="burst"><div class="sl"></div><div class="bb"></div><div class="bt">追問！</div></div>
 <div id="box"><div id="name"></div><div id="txt"></div><div id="nxt">▼</div></div>
 <div id="modal"><h2 id="mtitle"></h2><div id="mlist"></div><div id="mdesc"></div><div id="mbtns"></div></div>
 <div id="log"><h2>📜 對話回顧</h2><div id="logl"></div><button class="btn" id="logClose" style="flex:none;margin-top:10px">關閉</button></div><div id="flash"><div id="flasht">就是這個！</div></div>
@@ -279,6 +280,7 @@ const S={ev:[],flags:{},hearts:5,scene:null,hints:0,miss:0};
 window.__G=S;window.__fast=false;
 const CH={an:'周予安',zhen:'老闆娘玉珍',zhe:'攝影師阿哲',ming:'學長志明',ying:'學妹佳穎',chen:'導遊陳伯',kai:'社長黃俊凱',radio:'收音機'};
 const EV={
+ yunling:{ic:'☁️',n:'雲嶺開發的讓渡書',d:'三樓舊木櫃裡的土地讓渡同意書影本。\n2006 年，山莊後山林地（含斷崖步道）讓渡給【雲嶺開發】。\n經辦人：開發部經理【黃國雄】——社長的父親。\n信紙抬頭印著一個雲朵形狀的標誌。\n（跟這次的案子沒有直接關係……但讓人在意。）'},
  umb1:{ic:'☂️',n:'房裡的紅傘',d:'倒在 203 房地板中央的紅傘，傘面濕透、還在滴水。\n木頭傘柄刻著：「霧鎖山莊 4」。'},
  carpet:{ic:'💧',n:'濕掉的地板',d:'203 房【窗戶下方】直徑約 1 公尺的地板整片濕透，連木頭縫都積水。\n但【門口那一側是乾的】。\n雨水是從窗戶灌進來的——窗戶一定開了很久。'},
  lock:{ic:'🔒',n:'月牙鎖的勒痕',d:'窗戶的月牙鎖扳手上，有一道細細的新勒痕。\n勒痕裡卡著一小段【透明釣魚線】。'},
@@ -378,6 +380,7 @@ async function epMiss(who,heart){
  await epWait(heart?820:600,st);e.className='';
  setPor(who,'normal');por.classList.remove('smug');void por.offsetWidth;if(!RM.matches)por.classList.add('smug');
 }
+function showDoc(t){return new Promise(r=>{const d=$('#docv');d.querySelector('.bd').textContent=t;d.style.display='flex';SFX.blip&&SFX.blip();const c=()=>{d.style.display='none';d.ontouchend=d.onclick=null;r()};setTimeout(()=>{d.ontouchend=e=>{e.preventDefault();c()};d.onclick=c},window.__fast?0:250)})}
 async function crossExam(who,title,r){try{return await cx0(who,title,r)}finally{tban(null);box.classList.remove('tmode','press');por.classList.remove('zoom')}}
 async function cx0(who,title,r){
  let i=0;setBGM(S.flags.final?'final':'test');
@@ -469,6 +472,7 @@ const SC={
   {id:'umb3',x:34,y:58,w:42,h:14,l:'樓梯口的紅傘',f:async()=>{await N('志明倒下的樓梯口，撐開的紅傘還丟在那裡。傘柄刻著「3」。');await N('傘架上的傘，又少了一把。')}},
   {id:'terr',x:74,y:24,w:25,h:34,l:'露台門',f:async()=>{await N('通往三樓露台的門虛掩著，風雨灌進來。');await N('露台上鋪著【紅瓦】，角落有幾片剛被踩碎。\n……一、二樓的屋簷全是黑瓦，紅瓦只有這裡有。');await getEv('tile');await say('an','停電時有人從露台繞到樓梯口，再從外面溜回去……')}},
   {id:'xi',x:36,y:22,w:28,h:26,l:'囍字房門',f:async()=>{await N('走廊盡頭的房門貼著褪色的「囍」字。門鎖著。');await say('zhen','……那是雨晴的房間。二十年了，我一直沒動過。','nervous');await N('（老闆娘說，等真相大白，她會打開這扇門。）')}},
+  {id:'deed',x:2,y:32,w:30,h:16,l:'舊木櫃',f:async()=>{await N('走廊邊有個積滿灰塵的舊木櫃。抽屜裡夾著一疊泛黃的文件。');await showDoc('土地讓渡同意書（影本）\n民國九十五年（2006）九月\n標的：霧鎖山莊後山林地（含斷崖步道）\n受讓人：雲嶺開發股份有限公司\n經辦：開發部經理\u3000黃國雄');await say('an','黃國雄……社長的爸爸？二十年前，他是這家公司的經理？','nervous');await say('zhen','……那家公司當年一直來談買地。後山那片，最後還是被他們拿走了。','nervous');await getEv('yunling')}},
   {id:'down',x:50,y:74,w:34,h:10,l:'回大廳',f:()=>go('lobby')}],people:()=>[]}
 };
 let curHots=null;
@@ -643,6 +647,12 @@ async function goodEnd(){
  await say('ying','學長……謝謝你。','normal');
  await say('chen','今年的百合，我幫國雄先放吧。','normal');
  setPor('an','normal');await say('an','紅傘新娘的傳說，其實是一封沒送到的信。……希望這次，霧真的散了。','normal');
+ setPor(null);
+ await N('一週後，推理研究社社辦。');
+ await N('整理社長遺物時，紙箱底部壓著一個牛皮紙袋。裡面全是印著雲朵標誌的文件——「雲嶺開發」。');
+ await showDoc('內部備忘（社長的筆跡圈起了這一行）\n「霧鎖山莊案已於 2006 年處理完畢，相關紀錄請勿外流。」\n——雲嶺開發　開發部');
+ setPor('an','normal');await say('an','處理完畢……二十年前的事，真的只是一場意外嗎？');
+ await say('an','社長，你想查的就是這個吧。……剩下的，我會查下去。');
  setPor(null);
  const [sc,rk]=rank();window.__score={sc,rk,hearts:S.hearts,hints:S.hints,miss:S.miss};
  await chapter(`GOOD END<br>〈霧鎖山莊・紅傘之怨〉<br><span style="font-size:18px">❤️ 剩餘心數 ${S.hearts}/5<br>💡 使用提示 ${S.hints} 次　❌ 出示失誤 ${S.miss} 次<br>分數 ${sc}</span><br><span id="rank" style="font-size:54px;color:#ff5a4a">${rk}</span>`.replace('<br>〈','<br>〈'));
